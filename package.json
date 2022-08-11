@@ -1,0 +1,18 @@
+{
+  "source": "index.html",
+  "scripts": {
+    "start": "parcel --port 3000",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "@hope-ui/solid": "^0.6.7",
+    "@solidjs/router": "^0.4.2",
+    "@stitches/core": "^1.2.8",
+    "airport-codes": "^1.0.2",
+    "babel-preset-solid": "^1.4.8",
+    "parcel": "^2.7.0",
+    "solid-icons": "^1.0.1",
+    "solid-js": "^1.4.8",
+    "solid-transition-group": "^0.0.10"
+  }
+}
