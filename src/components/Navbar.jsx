@@ -2,12 +2,12 @@ import { Button, Text, Anchor, Flex, Input, Drawer, DrawerBody, DrawerCloseButto
 import { createSignal } from "solid-js"
 import { FiMenu } from 'solid-icons/fi'
   
-const Navbar = () => {
+const Navbar = (props) => {
     const [isOpen, setOpen] = createSignal(false)
 
     return (
         <>
-            <Box zIndex="999" color="white" top="0" position="fixed" w="100%" backgroundColor="transparent" py="$5" px="$10" boxShadow="$sm">
+            <Box zIndex="999" color={props.color} top="0" position="fixed" w="100%" backgroundColor={props.bg} py="$5" px="$10" boxShadow="$sm">
                 <Flex alignItems="center">
                     <Heading size="xl" fontWeight="$medium">
                         Travel
