@@ -96,7 +96,7 @@ const Home = () => {
                                 <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} textAlign="left" gap={{"@initial": "0", "@md": "10px"}}>
                                     <FormControl>
                                         <FormLabel>Adult Passengers</FormLabel>
-                                        <Input type="number" onChange={(e) => {
+                                        <Input value="1" type="number" onChange={(e) => {
                                             const data = formData()
                                             data.adult = e.target.value
                                             setFormData(data)
