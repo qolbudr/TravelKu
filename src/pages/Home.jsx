@@ -88,7 +88,7 @@ const Home = () => {
                                         const data = formData()
                                         data.depature = e.target.value
                                         setFormData(data)
-                                    }} type="date" min={currentDate()} placeholder="Depature"/>
+                                    }} type="date" value={currentDate()} min={currentDate()} placeholder="Depature"/>
                                 </FormControl>
                             </Box>
                             
