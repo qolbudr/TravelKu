@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar"
-import { SelectOptionIndicator, SelectOption, SelectOptionText, Box, FormControl, FormLabel, Heading, IconButton, Input, SimpleGrid, Select, SelectPlaceholder, SelectContent, SelectValue, SelectIcon, SelectTrigger, SelectListbox, Skeleton, Text } from "@hope-ui/solid"
+import { Spinner, SelectOptionIndicator, SelectOption, SelectOptionText, Box, FormControl, FormLabel, Heading, IconButton, Input, SimpleGrid, Select, SelectPlaceholder, SelectContent, SelectValue, SelectIcon, SelectTrigger, SelectListbox, Skeleton, Text } from "@hope-ui/solid"
 import { FiSearch } from 'solid-icons/fi'
 import { getToken } from "../function/authorization" 
 import * as Api from "../function/api"
@@ -13,12 +13,12 @@ const Home = () => {
     const [amadeusToken, setAmadeusToken] = createSignal({})
     const [tNavbar, setNavbar] = createSignal(true)
     const [formData, setFormData] = createSignal({
-        origin: '',
-        to: '',
-        depature: '',
-        adult: '',
+        origin: 'Surabaya - Indonesia (SUB)',
+        to: 'Jeddah - Saudi Arabia (JED)',
+        depature: currentDate(),
+        adult: 1,
         child: '',
-        class: ''
+        class: 'Economy'
     })
 
     const [flightData, setFlightData] = createSignal({
@@ -140,7 +140,7 @@ const Home = () => {
                             </Box>
                         </SimpleGrid>
                         </Box>
-                        <IconButton onClick={searchFlight} colorScheme="danger" position="absolute" bottom="50px" right="-$5" borderRadius="$full" size="xl" icon={<FiSearch/>}/>
+                        <IconButton onClick={searchFlight} colorScheme="danger" position="absolute" bottom="50px" right="-$5" borderRadius="$full" size="xl" icon={ isLoading() ? <Spinner/> : <FiSearch/>}/>
                     </Box>
                 </Box>
             </Box>
