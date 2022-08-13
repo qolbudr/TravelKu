@@ -5,7 +5,7 @@ import airport from 'airport-codes'
 const AutoComplete = (props) => {
     const [isVisible, setVisibility] = createSignal(false)
     const [suggestion, setSuggestion] = createSignal([])
-    const [value, setValue] = createSignal("")
+    const [value, setValue] = createSignal(props.value)
 
     const showSuggestion = () => {
         setValue('')

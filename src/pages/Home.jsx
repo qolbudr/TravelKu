@@ -79,8 +79,8 @@ const Home = () => {
                         <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} gap={{'@initial': '10px', '@md': '20px'}}>
                             <Box textAlign="left">
                                 <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} textAlign="left" gap={{"@initial": "0", "@md": "10px"}}>
-                                    <AutoComplete callback={autoCompleteCallback} label="From" placeholder="Origin"/>
-                                    <AutoComplete callback={autoCompleteCallback} label="To" placeholder="Destination"/>
+                                    <AutoComplete value="Surabaya - Indonesia (SUB)" callback={autoCompleteCallback} label="From" placeholder="Origin"/>
+                                    <AutoComplete value="Jeddah - Saudi Arabia (JED)" callback={autoCompleteCallback} label="To" placeholder="Destination"/>
                                 </SimpleGrid >
                                 <FormControl>
                                     <FormLabel>Depature</FormLabel>
