@@ -7,6 +7,7 @@ import { createSignal, onMount, createEffect } from "solid-js"
 import AutoComplete from "../components/AutoComplete"
 import Shimmer from "../components/Shimmer"
 import FlightResult from "../components/FlightResult"
+import { currentDate } from "../function/utils"
 
 const Home = () => {
     const [amadeusToken, setAmadeusToken] = createSignal({})
@@ -87,7 +88,7 @@ const Home = () => {
                                         const data = formData()
                                         data.depature = e.target.value
                                         setFormData(data)
-                                    }} type="date" placeholder="Depature"/>
+                                    }} type="date" min={currentDate()} placeholder="Depature"/>
                                 </FormControl>
                             </Box>
                             
