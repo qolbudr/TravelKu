@@ -113,7 +113,7 @@ const Home = () => {
                                 </SimpleGrid>
                                 <FormControl>
                                     <FormLabel>Seat Class</FormLabel>
-                                    <Select onChange={(e) => {
+                                    <Select value="Economy" onChange={(e) => {
                                             const data = formData()
                                             data.class = e
                                             setFormData(data)
