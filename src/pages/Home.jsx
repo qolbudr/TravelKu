@@ -38,9 +38,9 @@ const Home = () => {
 
     const searchFlight = async () => {
         setLoading(true)
-        const token = amadeusToken().access_token
         const data = formData()
-        const response = await Api.searchFlight(data, token)
+        const response = await Api.searchFlight(data)
+        console.log(response)
         setFlightData(response)
         setLoading(false)
     }
@@ -60,10 +60,6 @@ const Home = () => {
           window.removeEventListener('scroll', onScroll);
         }
       }, []);
-
-    onMount( async () => {
-        setAmadeusToken(await getToken());
-    })
 
     return (
         <>
@@ -140,11 +136,11 @@ const Home = () => {
                             </Box>
                         </SimpleGrid>
                         </Box>
-                        <IconButton onClick={searchFlight} colorScheme="danger" position="absolute" bottom="50px" right="-$5" borderRadius="$full" size="xl" icon={ isLoading() ? <Spinner/> : <FiSearch/>}/>
+                        <IconButton onClick={searchFlight} colorScheme="danger" position="absolute" bottom="50px" right="-$4" borderRadius="$full" size="xl" icon={ isLoading() ? <Spinner/> : <FiSearch/>}/>
                     </Box>
                 </Box>
             </Box>
-            <Box mt={{"@initial": "180px", "@md": "100px"}} mx={{"@initial": "5%", "@md": "50px"}}>
+            <Box pb="50px" mt={{"@initial": "180px", "@md": "100px"}} mx={{"@initial": "5%", "@md": "50px"}}>
                 {isLoading() ? (
                     <Shimmer/>
                 ) : (

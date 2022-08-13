@@ -2,7 +2,6 @@ import {Box, Button, SimpleGrid, Text, HStack, Badge} from '@hope-ui/solid'
 import * as utils from '../function/utils'
 import { IoAirplane } from 'solid-icons/io'
 
-
 const FlightResult = (props) => {
     const departureTime = utils.parseDate(props.departureTime)
     const arrivalTime = utils.parseDate(props.arrivalTime)

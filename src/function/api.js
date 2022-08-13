@@ -1,6 +1,9 @@
+import { getToken } from './authorization'
 let BASE_URL = "https://test.api.amadeus.com"
 
-export const searchFlight = async (formData, token) => {
+export const searchFlight = async (formData) => {
+    const fetchToken = await getToken()
+    const token = fetchToken.access_token
     const bodyRaw = {
         "currencyCode": "IDR",
         "originDestinations": [
@@ -73,7 +76,7 @@ export const searchFlight = async (formData, token) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyRaw)
-    })   
-
+    })
+    
     return response.json()
 }
