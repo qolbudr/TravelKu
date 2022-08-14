@@ -1,7 +1,7 @@
-import { lazy } from "solid-js";
 import { Routes, Route, Link } from "@solidjs/router"
 import { globalCss } from "@hope-ui/solid";
-const Home = lazy(() => import("./pages/Home"));
+import Home from "./pages/Home"
+import Booking from "./pages/Booking"
 import './global.css'
 import './function/authorization'
 
@@ -18,6 +18,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" component={Home}/>
+      <Route path="/booking" component={Booking}/>
     </Routes>
   )
 }

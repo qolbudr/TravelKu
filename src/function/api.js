@@ -15,6 +15,15 @@ export const searchFlight = async (formData) => {
                     "date": "2022-11-01",
                     "time": "00:00:00"
                 }
+            },
+            {
+                "id": "2",
+                "originLocationCode": "BOS",
+                "destinationLocationCode": "MAD",
+                "departureDateTimeRange": {
+                    "date": "2022-11-01",
+                    "time": "00:00:00"
+                }
             }
         ],
         "travelers": [],
@@ -31,6 +40,9 @@ export const searchFlight = async (formData) => {
                         ]
                     }
                 ]
+                // "carrierRestrictions": {
+                //     "excludedCarrierCodes": []
+                // }
             }
         }
     }
@@ -67,7 +79,13 @@ export const searchFlight = async (formData) => {
     bodyRaw.originDestinations[0].originLocationCode = originLocationCode
     bodyRaw.originDestinations[0].destinationLocationCode = destinationLocationCode
     bodyRaw.originDestinations[0].departureDateTimeRange.date = formData.depature
+
+    bodyRaw.originDestinations[1].originLocationCode = destinationLocationCode
+    bodyRaw.originDestinations[1].destinationLocationCode = originLocationCode
+    bodyRaw.originDestinations[1].departureDateTimeRange.date = formData.return
     bodyRaw.searchCriteria.flightFilters.cabinRestrictions[0].cabin = formData.class.toUpperCase()
+    // if(formData.airlines != 'ALL')
+    //     bodyRaw.searchCriteria.flightFilters.carrierRestrictions.excludedCarrierCodes.push(formData.airlines)
     
     const response = await fetch(`${BASE_URL}/v2/shopping/flight-offers`, {
         method: 'POST',

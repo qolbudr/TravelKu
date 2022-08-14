@@ -7,7 +7,8 @@ import { createSignal, onMount, createEffect } from "solid-js"
 import AutoComplete from "../components/AutoComplete"
 import Shimmer from "../components/Shimmer"
 import FlightResult from "../components/FlightResult"
-import { currentDate } from "../function/utils"
+import { currentDate, nextDate } from "../function/utils"
+import airlinesData from "../assets/airlines.json"
 
 const Home = () => {
     const [amadeusToken, setAmadeusToken] = createSignal({})
@@ -16,9 +17,11 @@ const Home = () => {
         origin: 'Surabaya - Indonesia (SUB)',
         to: 'Jeddah - Saudi Arabia (JED)',
         depature: currentDate(),
+        return: nextDate(),
         adult: 1,
         child: '',
-        class: 'Economy'
+        class: 'Economy',
+        airlines: 'ALL'
     })
 
     const [flightData, setFlightData] = createSignal({
@@ -48,8 +51,13 @@ const Home = () => {
         setLoading(true)
         try {
             const data = formData()
-            const response = await Api.searchFlight(data)
-            console.log(response)
+            let response = await Api.searchFlight(data)
+            let datas = response.data
+            if(formData().airlines != 'ALL') {
+                datas = datas.filter((item) => item.itineraries[0].segments[0].carrierCode == formData().airlines)
+            }
+
+            response.data = datas
             setFlightData(response)
             setLoading(false)
         } catch (e) {
@@ -73,10 +81,6 @@ const Home = () => {
         }
       }, []);
 
-    onMount(() => {
-        searchFlight()
-    })
-
     return (
         <>
             <Navbar color={tNavbar() ? 'white' : 'black'} bg={tNavbar() ? 'transparent' : 'white'}/>
@@ -86,7 +90,7 @@ const Home = () => {
                     <Heading size={{"@initial": "xl", "$md": "4xl"}} textTransform="uppercase">
                         Find Flight for Your Need
                     </Heading>
-                    <Box position="absolute" backgroundColor="white" p={{"@initial": "$2 $5 $6 $5", "@md": "$2 $14 $6 $5"}} boxShadow="$md" w={{"@initial": "90%", "@md": "80%"}} bottom={{"@initial": "-150px", "@md": "-50px"}}>
+                    <Box position="absolute" backgroundColor="white" p={{"@initial": "$2 $5 $6 $5", "@md": "$2 $14 $6 $5"}} boxShadow="$md" w={{"@initial": "90%", "@md": "80%"}} bottom={{"@initial": "-300px", "@md": "-50px"}}>
                         <Box>
                         <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} gap={{'@initial': '10px', '@md': '20px'}}>
                             <Box textAlign="left">
@@ -94,6 +98,7 @@ const Home = () => {
                                     <AutoComplete value="Surabaya - Indonesia (SUB)" callback={autoCompleteCallback} label="From" placeholder="Origin"/>
                                     <AutoComplete value="Jeddah - Saudi Arabia (JED)" callback={autoCompleteCallback} label="To" placeholder="Destination"/>
                                 </SimpleGrid >
+                                <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} textAlign="left" gap={{"@initial": "0", "@md": "10px"}}>
                                 <FormControl>
                                     <FormLabel>Depature</FormLabel>
                                     <Input onChange={(e) => {
@@ -102,6 +107,15 @@ const Home = () => {
                                         setFormData(data)
                                     }} type="date" value={currentDate()} min={currentDate()} placeholder="Depature"/>
                                 </FormControl>
+                                <FormControl>
+                                    <FormLabel>Return</FormLabel>
+                                    <Input onChange={(e) => {
+                                        const data = formData()
+                                        data.return = e.target.value
+                                        setFormData(data)
+                                    }} type="date" value={nextDate()} min={nextDate()} placeholder="Depature"/>
+                                </FormControl>
+                                </SimpleGrid>
                             </Box>
                             
                             <Box textAlign="left">
@@ -123,32 +137,58 @@ const Home = () => {
                                         }} placeholder="No. of Passengers"/>
                                     </FormControl>
                                 </SimpleGrid>
-                                <FormControl>
-                                    <FormLabel>Seat Class</FormLabel>
-                                    <Select value="Economy" onChange={(e) => {
-                                            const data = formData()
-                                            data.class = e
-                                            setFormData(data)
-                                        }}>
-                                        <SelectTrigger>
-                                            <SelectPlaceholder>Seat Class</SelectPlaceholder>
+                                <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} textAlign="left" gap={{"@initial": "0", "@md": "10px"}}>
+                                    <FormControl>
+                                        <FormLabel>Airlines</FormLabel>
+                                        <Select value={formData().airlines} onChange={(e) => {
+                                                const data = formData()
+                                                data.airlines = e
+                                                setFormData(data)
+                                            }}>
+                                          <SelectTrigger>
+                                            <SelectPlaceholder>Choose some frameworks</SelectPlaceholder>
                                             <SelectValue />
                                             <SelectIcon />
-                                        </SelectTrigger>
-                                        <SelectContent>
+                                          </SelectTrigger>
+                                          <SelectContent>
                                             <SelectListbox>
-                                            <For each={["Economy", "Business", "First"]}>
-                                                {item => (
-                                                <SelectOption value={item}>
-                                                    <SelectOptionText>{item}</SelectOptionText>
+                                                {Object.entries(airlinesData).map(([k,v]) => 
+                                                  <SelectOption value={k}>
+                                                    <SelectOptionText>{v}</SelectOptionText>
                                                     <SelectOptionIndicator />
-                                                </SelectOption>
+                                                  </SelectOption>
                                                 )}
-                                            </For>
                                             </SelectListbox>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
+                                          </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Seat Class</FormLabel>
+                                        <Select value="Economy" onChange={(e) => {
+                                                const data = formData()
+                                                data.class = e
+                                                setFormData(data)
+                                            }}>
+                                            <SelectTrigger>
+                                                <SelectPlaceholder>Seat Class</SelectPlaceholder>
+                                                <SelectValue />
+                                                <SelectIcon />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectListbox>
+                                                <For each={["Economy", "Business", "First"]}>
+                                                    {item => (
+                                                    <SelectOption value={item}>
+                                                        <SelectOptionText>{item}</SelectOptionText>
+                                                        <SelectOptionIndicator />
+                                                    </SelectOption>
+                                                    )}
+                                                </For>
+                                                </SelectListbox>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                </SimpleGrid>
                             </Box>
                         </SimpleGrid>
                         </Box>
@@ -156,7 +196,7 @@ const Home = () => {
                     </Box>
                 </Box>
             </Box>
-            <Box pb="50px" mt={{"@initial": "180px", "@md": "100px"}} mx={{"@initial": "5%", "@md": "50px"}}>
+            <Box pb="50px" mt={{"@initial": "330px", "@md": "100px"}} mx={{"@initial": "5%", "@md": "50px"}}>
                 {isLoading() ? (
                     <Shimmer/>
                 ) : (
@@ -165,9 +205,9 @@ const Home = () => {
                             flight={flightData()}
                             item={item}
                             departureIataCode={item.itineraries[0].segments[0].departure.iataCode}
-                            arrivalIataCode={item.itineraries[0].segments[item.itineraries[0].segments.length - 1].arrival.iataCode}
+                            arrivalIataCode={item.itineraries[item.itineraries.length - 1].segments[item.itineraries[item.itineraries.length - 1].segments.length - 1].arrival.iataCode}
                             departureTime={item.itineraries[0].segments[0].departure.at}
-                            arrivalTime={item.itineraries[0].segments[0].arrival.at}
+                            arrivalTime={item.itineraries[item.itineraries.length - 1].segments[item.itineraries[item.itineraries.length - 1].segments.length - 1].arrival.at}
                             price={item.price.total}
                             carrierCode={item.itineraries[0].segments[0].carrierCode}
                             carrierNumber={item.itineraries[0].segments[0].number}
