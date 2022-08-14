@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar"
-import { Spinner, SelectOptionIndicator, SelectOption, SelectOptionText, Box, FormControl, FormLabel, Heading, IconButton, Input, SimpleGrid, Select, SelectPlaceholder, SelectContent, SelectValue, SelectIcon, SelectTrigger, SelectListbox, Skeleton, Text } from "@hope-ui/solid"
+import { Spinner, notificationService, SelectOptionIndicator, SelectOption, SelectOptionText, Box, FormControl, FormLabel, Heading, IconButton, Input, SimpleGrid, Select, SelectPlaceholder, SelectContent, SelectValue, SelectIcon, SelectTrigger, SelectListbox, Skeleton, Text } from "@hope-ui/solid"
 import { FiSearch } from 'solid-icons/fi'
 import { getToken } from "../function/authorization" 
 import * as Api from "../function/api"
@@ -36,13 +36,25 @@ const Home = () => {
         setFormData(data)
     }
 
+    const showNotification = () => {
+        notificationService.show({
+            status: "danger", /* or success, warning, danger */
+            title: "Something error",
+            description: "Please refresh current page",
+        });
+    }
+
     const searchFlight = async () => {
         setLoading(true)
-        const data = formData()
-        const response = await Api.searchFlight(data)
-        console.log(response)
-        setFlightData(response)
-        setLoading(false)
+        try {
+            const data = formData()
+            const response = await Api.searchFlight(data)
+            console.log(response)
+            setFlightData(response)
+            setLoading(false)
+        } catch (e) {
+            showNotification()
+        }    
     }
 
     createEffect(() => {
@@ -92,7 +104,7 @@ const Home = () => {
                                 <SimpleGrid columns={{ "@initial": 1, "@md": 2 }} textAlign="left" gap={{"@initial": "0", "@md": "10px"}}>
                                     <FormControl>
                                         <FormLabel>Adult Passengers</FormLabel>
-                                        <Input value="1" type="number" onChange={(e) => {
+                                        <Input min={1} value="1" type="number" onChange={(e) => {
                                             const data = formData()
                                             data.adult = e.target.value
                                             setFormData(data)

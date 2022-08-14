@@ -77,6 +77,10 @@ export const searchFlight = async (formData) => {
         },
         body: JSON.stringify(bodyRaw)
     })
-    
-    return response.json()
+
+    if(response.status != 200) {
+        throw 'Something error'
+    } else {
+        return response.json()
+    }
 }
