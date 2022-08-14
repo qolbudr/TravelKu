@@ -158,6 +158,7 @@ const Home = () => {
                 ) : (
                     flightData().data.map((item) =>
                         <FlightResult 
+                            item: item
                             departureIataCode={item.itineraries[0].segments[0].departure.iataCode}
                             arrivalIataCode={item.itineraries[0].segments[item.itineraries[0].segments.length - 1].arrival.iataCode}
                             departureTime={item.itineraries[0].segments[0].departure.at}
@@ -165,6 +166,7 @@ const Home = () => {
                             price={item.price.total}
                             carrierCode={item.itineraries[0].segments[0].carrierCode}
                             carrierNumber={item.itineraries[0].segments[0].number}
+                            airlineName={flightData().dictionaries.carriers[item.itineraries[0].segments[0].carrierCode]}
                         />
                     )
                 )}

@@ -84,3 +84,28 @@ export const searchFlight = async (formData) => {
         return response.json()
     }
 }
+
+export const flightPricing = async (flightOffer) => {
+    const fetchToken = await getToken()
+    const token = fetchToken.access_token
+    const bodyRaw = {
+        "data": {
+            "type": "flight-offers-pricing",
+            "flightOffers": []
+        }
+    }
+
+    bodyRaw.data.flightOffers.push(flightOffer)
+
+    const response = await fetch(`${BASE_URL}/v1/shopping/flight-offers/pricing`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'X-HTTP-Method-Override': 'GET'
+        },
+        body: JSON.stringify(bodyRaw)
+    })
+
+    return response.json()
+}
