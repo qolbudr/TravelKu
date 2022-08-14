@@ -95,14 +95,15 @@ export const flightPricing = async (flightOffer) => {
         }
     }
 
+    console.log(bodyRaw)
+
     bodyRaw.data.flightOffers.push(flightOffer)
 
     const response = await fetch(`${BASE_URL}/v1/shopping/flight-offers/pricing`, {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json',
-            'X-HTTP-Method-Override': 'GET'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyRaw)
     })

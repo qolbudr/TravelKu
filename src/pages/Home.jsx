@@ -73,6 +73,10 @@ const Home = () => {
         }
       }, []);
 
+    onMount(() => {
+        searchFlight()
+    })
+
     return (
         <>
             <Navbar color={tNavbar() ? 'white' : 'black'} bg={tNavbar() ? 'transparent' : 'white'}/>
@@ -157,8 +161,9 @@ const Home = () => {
                     <Shimmer/>
                 ) : (
                     flightData().data.map((item) =>
-                        <FlightResult 
-                            item: item
+                        <FlightResult
+                            flight={flightData()}
+                            item={item}
                             departureIataCode={item.itineraries[0].segments[0].departure.iataCode}
                             arrivalIataCode={item.itineraries[0].segments[item.itineraries[0].segments.length - 1].arrival.iataCode}
                             departureTime={item.itineraries[0].segments[0].departure.at}
