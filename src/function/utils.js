@@ -22,10 +22,12 @@ export const parseDate = (date) => {
     d = dateArr[2],
     month = parsedMonth[dateArr[1] - 1]
     
-    return obj = {
+    const obj = {
         time: time,
         date: (d + ' ' + month).toUpperCase()
     }
+
+    return obj
 }
 
 export const currentDate = () => {
