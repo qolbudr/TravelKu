@@ -118,7 +118,7 @@ const Booking = () => {
 			const data = await createBooking(dataRaw)
 			if(data.hasOwnProperty('data')) {
 				setLoading(false)
-				alert(data.data.id)
+				window.location.href = '#/check-booking/' + data.data.id
 			}
 		} catch(e) {
 			setLoading(false)

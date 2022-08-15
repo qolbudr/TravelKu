@@ -144,7 +144,7 @@ export const createBooking  = async (dataRaw) => {
 export const checkBooking = async (bookingId) => {
     const fetchToken = await getToken()
     const token = fetchToken.access_token
-    const response = await fetch(`${BASE_URL}/v1/booking/flight-orders`, {
+    const response = await fetch(`${BASE_URL}/v1/booking/flight-orders/${bookingId}`, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + token
