@@ -33,7 +33,7 @@ const FlightResult = (props) => {
             <Box onClick={() => setHide(!isHide())} border="1px solid $danger7" mb={isHide() ? "30px" : "0px"} borderRadius={isHide() ? "$md" : "none"} px={{"@initial": "20px", "@md": "30px"}} py={{"@initial": "15px", "@md": "@20px"}} w="100%">
                 <SimpleGrid justifyContent="space-between" gap="10px" alignItems="center" columns={{ "@initial": 1, "@md": 3 }} textAlign="left">
                     <HStack alignItems="center" gap="10px">
-                        <Box w="50px" h="50px" borderRadius="$full" backgroundColor="$danger4" display="flex" alignItems="center" justifyContent="center">
+                        <Box  w="50px" h="50px" borderRadius="$full" backgroundColor="$danger4" display={props.hideButton ? 'none' : 'flex'} alignItems="center" justifyContent="center">
                             <IoAirplane color="red"/>  
                         </Box>
                         <Box>
@@ -54,7 +54,7 @@ const FlightResult = (props) => {
                     </HStack>
                     <Box textAlign={{"@initial": "left", "@md": "right"}}>
                         <Text fontSize="$lg" fontWeight="$medium" color="$danger11">IDR {utils.parsePrice(props.price)}</Text>
-                        <Button onClick={() => gotoBooking()} size="sm" mt="10px" colorScheme="danger">Choose</Button>
+                        <Button display={props.hideButton ? 'none' : 'flex'} onClick={() => gotoBooking()} size="sm" mt="10px" colorScheme="danger">Choose</Button>
                     </Box>
                 </SimpleGrid>
             </Box>
