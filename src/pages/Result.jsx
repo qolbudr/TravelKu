@@ -23,6 +23,7 @@ const Result = () => {
         const result = await checkBooking(bookingId)
         setResult(result)
         setLoading(false)
+        localStorage.clear()
     })
 
     createEffect(() => {
