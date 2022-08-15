@@ -19,6 +19,7 @@ const App = () => {
     <Routes>
       <Route path="/" component={Home}/>
       <Route path="/booking" component={Booking}/>
+      <Route path="/check-booking/:bookingId" component={Booking}/>
     </Routes>
   )
 }

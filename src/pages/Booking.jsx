@@ -1,12 +1,130 @@
 import Navbar from "../components/Navbar"
 import { createSignal, onMount, createEffect } from "solid-js"
-import { Spinner, Grid, GridItem, FormHelperText, notificationService, SelectOptionIndicator, SelectOption, SelectOptionText, Box, FormControl, FormLabel, Heading, IconButton, Input, SimpleGrid, Select, SelectPlaceholder, SelectContent, SelectValue, SelectIcon, SelectTrigger, SelectListbox, Skeleton, Text } from "@hope-ui/solid"
+import { Spinner, Button, Grid, GridItem, FormHelperText, notificationService, SelectOptionIndicator, SelectOption, SelectOptionText, Box, FormControl, FormLabel, Heading, IconButton, Input, SimpleGrid, Select, SelectPlaceholder, SelectContent, SelectValue, SelectIcon, SelectTrigger, SelectListbox, Skeleton, Text } from "@hope-ui/solid"
 import FlightResult from "../components/FlightResult"
+import AdultForm from "../components/AdultForm"
+import ChildForm from "../components/ChildForm"
+import { createBooking } from '../function/api'
 
 const Booking = () => {
 	const [tNavbar, setNavbar] = createSignal(true)
 	const [flightData, setFlightData] = createSignal({})
 	const [item, setItem] = createSignal({})
+	const [isLoading, setLoading] = createSignal(false)
+
+	const showNotification = () => {
+        notificationService.show({
+            status: "danger", /* or success, warning, danger */
+            title: "Something error",
+            description: "Check your booking input",
+        });
+    }
+
+	const validateInput = async (e) => {
+		setLoading(true)
+		e.preventDefault()
+		try {
+
+			const dataRaw = {
+				"data": {
+				"type": "flight-order",
+				"flightOffers": [],
+				"travelers": [],
+				"remarks": {
+					"general": [
+					{
+						"subType": "GENERAL_MISCELLANEOUS",
+						"text": "ONLINE BOOKING FROM INCREIBLE VIAJES"
+					}
+					]
+				},
+				"ticketingAgreement": {
+					"option": "DELAY_TO_CANCEL",
+					"delay": "6D"
+				},
+				"contacts": [
+					{
+					"addresseeName": {
+						"firstName": e.target.fn.value,
+						"lastName": e.target.ln.value
+					},
+					"companyName": "TRAVELKU",
+					"purpose": "STANDARD",
+					"phones": [
+						{
+						"deviceType": "MOBILE",
+						"countryCallingCode": "62",
+						"number": e.target.mn.value
+						}
+					],
+					"emailAddress": e.target.email.value,
+					"address": {
+						"lines": [
+						"Babat"
+						],
+						"postalCode": "62207",
+						"cityName": "Lamongan",
+						"countryCode": "ID"
+					}
+					}
+				]
+				}
+			}
+			item().travelerPricings.map((items, key) => {
+				let traveler = {
+					"id": key + 1,
+					"dateOfBirth": e.target[`dob-${key}`].value,
+					"name": {
+					"firstName": e.target[`fn-${key}`].value,
+					"lastName": e.target[`ln-${key}`].value
+					},
+					"gender": e.target[`gender-${key}`].value,
+					"contact": {
+					"emailAddress": e.target.email.value,
+					"phones": [
+						{
+						"deviceType": "MOBILE",
+						"countryCallingCode": "62",
+						"number": e.target.mn.value
+						}
+					]
+					}
+				} 
+
+				if(e.target.hasOwnProperty(`pn-${key}`)) {
+					const iss = e.target[`exp-${key}`].value.split('-')
+					traveler.documents = []
+					const doc = {
+						"documentType": "PASSPORT",
+						"birthPlace": "Jakarta",
+						"issuanceLocation": "Jakarta",
+						"issuanceDate": (parseInt(iss[0]) - 10) + '-' + iss[1] + '-' + iss[2] ,
+						"number": e.target[`pn-${key}`].value,
+						"expiryDate": e.target[`exp-${key}`].value,
+						"issuanceCountry": e.target[`coi-${key}`].value,
+						"validityCountry": e.target[`coi-${key}`].value,
+						"nationality": e.target[`nat-${key}`].value,
+						"holder": true
+					}
+
+					traveler.documents.push(doc)
+				}
+
+				dataRaw.data.travelers.push(traveler)
+			})
+
+			dataRaw.data.flightOffers.push(item())
+
+			const data = await createBooking(dataRaw)
+			if(data.hasOwnProperty('data')) {
+				setLoading(false)
+				alert(data.data.id)
+			}
+		} catch(e) {
+			setLoading(false)
+			showNotification()
+		}
+	}
 
 	createEffect(() => {
 		const onScroll = () => {
@@ -29,7 +147,6 @@ const Booking = () => {
 		const flightData = JSON.parse(localStorage.getItem('flightData'))
 		setItem(item);
 		setFlightData(flightData)
-		console.log(item)
 	})
 
 
@@ -48,7 +165,9 @@ const Booking = () => {
 					</Box>
 
 					<Box w="100%">
+					<form onSubmit={validateInput}>
 						<Grid templateColumns="repeat(4, 1fr)" textAlign="left" gap={{"@initial": "10px", "@md": "30px"}} p="$10">
+							
 							<GridItem colSpan={{'@initial': 4, '@md': 2}}>
 								<Box>
 									<Heading size="2xl">Your Booking</Heading>
@@ -62,22 +181,22 @@ const Booking = () => {
 											<SimpleGrid columns={{ "@initial": 1, "@md": 2 }} gap="20px">
 												<FormControl>
 												<FormLabel>First & Middle Name (if any)</FormLabel>
-												<Input type="text"/>
+												<Input name="fn" type="text"/>
 												<FormHelperText>(without title and punctuation)</FormHelperText>
 												</FormControl>
 												<FormControl>
 												<FormLabel>Family Name / Last Name</FormLabel>
-												<Input type="text"/>
+												<Input name="ln" type="text"/>
 												<FormHelperText>(without title and punctuation)</FormHelperText>
 												</FormControl>
 												<FormControl>
 												<FormLabel>Mobile Number</FormLabel>
-												<Input type="text"/>
+												<Input name="mn" type="text"/>
 												<FormHelperText>e.g. +62812345678, for Country Code (+62) and Mobile No. 0812345678</FormHelperText>
 												</FormControl>
 												<FormControl>
 												<FormLabel>Email</FormLabel>
-												<Input type="email"/>
+												<Input name="email" type="email"/>
 												<FormHelperText>e.g. email@example.com</FormHelperText>
 												</FormControl>
 											</SimpleGrid>
@@ -85,97 +204,43 @@ const Booking = () => {
 									</Box>
 
 									<Heading size="lg" mb="10px">Traveler Details</Heading>
-									<Box mb="20px" boxShadow="$md" backgroundColor="white" w="100%">
-										<Box borderBottom="1px solid $neutral8" p="$5">
-											<Heading size="md">Adult 1</Heading>
-										</Box>
-										<Box p="$5">
-											<Text mb="20px" size="sm" color="green">Important: Passport valid for at least 6 months from departure date is required for international travel or transit abroad</Text>
-											<Text mb="20px" size="sm" color="$warning10">Make sure that the passenger's name is exactly as written in the government issued ID/Passport/Driving License. \nAvoid any mistake, because some airlines don't allow name corrections after booking.</Text>
-											<SimpleGrid columns={{ "@initial": 1, "@md": 2 }} gap="20px">
-												<FormControl>
-												<FormLabel>Gender</FormLabel>
-												<Select value="MALE">
-													<SelectTrigger>
-														<SelectPlaceholder>Gender</SelectPlaceholder>
-														<SelectValue />
-														<SelectIcon />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectListbox>
-														<For each={["MALE", "FEMALE"]}>
-															{item => (
-															<SelectOption value={item}>
-																<SelectOptionText>{item}</SelectOptionText>
-																<SelectOptionIndicator />
-															</SelectOption>
-															)}
-														</For>
-														</SelectListbox>
-													</SelectContent>
-												</Select>
-												</FormControl>
-												<Box></Box>
-												<FormControl>
-												<FormLabel>First & Middle Name (if any)</FormLabel>
-												<Input type="text"/>
-												<FormHelperText>(without title and punctuation)</FormHelperText>
-												</FormControl>
-												<FormControl>
-												<FormLabel>Family Name / Last Name</FormLabel>
-												<Input type="text"/>
-												<FormHelperText>(without title and punctuation)</FormHelperText>
-												</FormControl>
-												<FormControl>
-												<FormLabel>Date of Birth</FormLabel>
-												<Input type="date"/>
-												<FormHelperText>Adult Passenger (Age 12 and older)</FormHelperText>
-												</FormControl>
-												<FormControl>
-												<FormLabel>Nationality</FormLabel>
-												<Input maxLength={2} type="email"/>
-												<FormHelperText>e.g. ID (Indonesia)</FormHelperText>
-												</FormControl>
-												<FormControl>
-												<FormLabel>Passport Number</FormLabel>
-												<Input type="number"/>
-												<FormHelperText>For passengers below 18 years old, you may enter another valid ID number (e.g. birth certificate, student ID) or date of birth (ddmmyyyy)</FormHelperText>
-												</FormControl>
-												<Box></Box>
-												<FormControl>
-												<FormLabel>Country of Issue</FormLabel>
-												<Input type="number"/>
-												<FormHelperText>e.g. ID (Indonesia)</FormHelperText>
-												</FormControl>
-												<FormControl>
-												<FormLabel>Expiry Date</FormLabel>
-												<Input type="date"/>
-												</FormControl>
-											</SimpleGrid>
-										</Box> 
-									</Box>	      			
+									{item().travelerPricings.map((items, key) => {
+										return (
+											<Box>
+												{items.travelerType == "ADULT" ? (
+													<AdultForm key={key}/>
+												) : (
+													<ChildForm key={key}/>
+												)}
+											</Box>
+										)
+									})}
 								</Box>
 							</GridItem>
 							<GridItem colSpan={{'@initial': 4, '@md': 2}}>
 								{item().hasOwnProperty('itineraries') ? (
-									<FlightResult
-										flight={flightData()}
-										item={item()}
-										departureIataCode={item().itineraries[0].segments[0].departure.iataCode}
-										arrivalIataCode={item().itineraries[item().itineraries.length - 1].segments[item().itineraries[item().itineraries.length - 1].segments.length - 1].arrival.iataCode}
-										departureTime={item().itineraries[0].segments[0].departure.at}
-										arrivalTime={item().itineraries[item().itineraries.length - 1].segments[item().itineraries[item().itineraries.length - 1].segments.length - 1].arrival.at}
-										price={item().price.total}
-										carrierCode={item().itineraries[0].segments[0].carrierCode}
-										carrierNumber={item().itineraries[0].segments[0].number}
-										airlineName={flightData().dictionaries.carriers[item().itineraries[0].segments[0].carrierCode]}
-										hideButton={true}
-									/>
+									<Box>
+										<FlightResult
+											flight={flightData()}
+											item={item()}
+											departureIataCode={item().itineraries[0].segments[0].departure.iataCode}
+											arrivalIataCode={item().itineraries[item().itineraries.length - 1].segments[item().itineraries[item().itineraries.length - 1].segments.length - 1].arrival.iataCode}
+											departureTime={item().itineraries[0].segments[0].departure.at}
+											arrivalTime={item().itineraries[item().itineraries.length - 1].segments[item().itineraries[item().itineraries.length - 1].segments.length - 1].arrival.at}
+											price={item().price.total}
+											carrierCode={item().itineraries[0].segments[0].carrierCode}
+											carrierNumber={item().itineraries[0].segments[0].number}
+											airlineName={flightData().dictionaries.carriers[item().itineraries[0].segments[0].carrierCode]}
+											hideButton={true}
+										/>
+										<Button size="lg" w="100%" colorScheme="danger" type="submit">{isLoading() ? <Spinner/> : 'Booking'}</Button>
+									</Box>
 								) : (
 									<Box></Box>
 								)}
 							</GridItem>
 						</Grid>
+						</form>
 					</Box>
 				</>
 			) : (

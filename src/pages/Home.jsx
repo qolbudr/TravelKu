@@ -51,7 +51,7 @@ const Home = () => {
         notificationService.show({
             status: "danger", /* or success, warning, danger */
             title: "Something error",
-            description: "Please refresh current page",
+            description: "Flight with your criteria is not found",
         });
     }
     const searchFlight = async () => {
@@ -69,12 +69,17 @@ const Home = () => {
         }    
     }
     const goFilter = () => {
+        console.log(filter())
         setLoading(true)
         const data = JSON.parse(localStorage.getItem('flightData'))
         let datas = data.data
 
         if(filter().airlines && filter().airlines != 'ALL') {
             datas = datas.filter((item) => item.itineraries[0].segments[0].carrierCode == filter().airlines)
+        }
+
+        if((filter().priceStart != null && filter().priceEnd != null) && (filter().priceStart != '' && filter().priceEnd != '')) {
+            datas = datas.filter((item) => parseInt(item.price.total) > parseInt(filter().priceStart) && parseInt(item.price.total) < parseInt(filter().priceEnd) )
         }
 
         data.data = datas

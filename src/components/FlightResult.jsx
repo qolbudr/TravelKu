@@ -30,7 +30,7 @@ const FlightResult = (props) => {
 
     return (
         <>
-            <Box onClick={() => setHide(!isHide())} border="1px solid $danger7" mb={isHide() ? "30px" : "0px"} borderRadius={isHide() ? "$md" : "none"} px={{"@initial": "20px", "@md": "30px"}} py={{"@initial": "15px", "@md": "@20px"}} w="100%">
+            <Box onClick={() => setHide(!isHide())} border="1px solid $danger7" mb={props.hideButton ? '0px' : isHide() ? "30px" : "0px"} borderRadius={props.hideButton ? "none" : isHide() ? "$md" : "none"} px={{"@initial": "20px", "@md": "30px"}} py={{"@initial": "15px", "@md": "@20px"}} w="100%">
                 <SimpleGrid justifyContent="space-between" gap="10px" alignItems="center" columns={{ "@initial": 1, "@md": 3 }} textAlign="left">
                     <HStack alignItems="center" gap="10px">
                         <Box  w="50px" h="50px" borderRadius="$full" backgroundColor="$danger4" display={props.hideButton ? 'none' : 'flex'} alignItems="center" justifyContent="center">
@@ -54,12 +54,12 @@ const FlightResult = (props) => {
                     </HStack>
                     <Box textAlign={{"@initial": "left", "@md": "right"}}>
                         <Text fontSize="$lg" fontWeight="$medium" color="$danger11">IDR {utils.parsePrice(props.price)}</Text>
-                        <Button display={props.hideButton ? 'none' : 'flex'} onClick={() => gotoBooking()} size="sm" mt="10px" colorScheme="danger">Choose</Button>
+                        <Button display={props.hideButton ? 'none' : 'inline-flex'} onClick={() => gotoBooking()} size="sm" mt="10px" colorScheme="danger">Choose</Button>
                     </Box>
                 </SimpleGrid>
             </Box>
             
-            <Box hidden={isHide()} border="1px solid $danger7" borderTop="none" mb="20px" px={{"@initial": "20px", "@md": "30px"}} py={{"@initial": "15px", "@md": "@20px"}} w="100%">
+            <Box hidden={props.hideButton ? false : isHide() ? true : false} border="1px solid $danger7" borderTop="none" mb="20px" px={{"@initial": "20px", "@md": "30px"}} py={{"@initial": "15px", "@md": "@20px"}} w="100%">
                 {props.item.itineraries.map((itema) =>
                     <Box>
                         {itema.segments.map((item) => {

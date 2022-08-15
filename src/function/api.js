@@ -112,8 +112,6 @@ export const flightPricing = async (flightOffer) => {
         }
     }
 
-    console.log(bodyRaw)
-
     bodyRaw.data.flightOffers.push(flightOffer)
 
     const response = await fetch(`${BASE_URL}/v1/shopping/flight-offers/pricing`, {
@@ -123,6 +121,34 @@ export const flightPricing = async (flightOffer) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyRaw)
+    })
+
+    return response.json()
+}
+
+export const createBooking  = async (dataRaw) => {
+    const fetchToken = await getToken()
+    const token = fetchToken.access_token
+    const response = await fetch(`${BASE_URL}/v1/booking/flight-orders`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataRaw)
+    })
+
+    return response.json()
+}
+
+export const checkBooking = async (bookingId) => {
+    const fetchToken = await getToken()
+    const token = fetchToken.access_token
+    const response = await fetch(`${BASE_URL}/v1/booking/flight-orders`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
     })
 
     return response.json()
